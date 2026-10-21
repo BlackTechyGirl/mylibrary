@@ -6,14 +6,16 @@ from django.db import models
 
 # Create your models here.
 class Author(models.Model):
-    first_name = models.CharField(max_length=255, blank=False, null=False)
-    last_name = models.CharField(max_length=255, blank=False, null=False)
-    date_of_birth = models.DateField(blank=False, null=False)
-    date_of_death = models.DateField(blank=True, null=True, default='0000-10-01')
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    date_of_birth = models.DateField()
+    date_of_death = models.DateField(
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
-
 
 class Book(models.Model):
     title = models.CharField(max_length=255, blank=False, null=False)
@@ -34,22 +36,30 @@ class Genre(models.Model):
         ('FANTASY', 'FAN'),
         ('COMEDY', 'COM'),
         ('ROM-COM', 'ROM'),
-
     ]
-    name = models.CharField(max_length=25, choices=Genre_CHOICES, default='COM')
 
+    name = models.CharField(
+        max_length=25,
+        choices=Genre_CHOICES,
+        default='COM'
+    )
     def __str__(self):
         return self.name
 
 
 class Language(models.Model):
-    LANGUAGE_CHOICES =[
-        ('ENGLISH', 'ENG'),
-        ('HAUSA', 'HAU'),
-        ('FRENCH', 'FRE'),
-        ('SPANISH', 'SPA'),
+    LANGUAGE_CHOICES = [
+        ('ENGLISH', 'English'),
+        ('HAUSA', 'Hausa'),
+        ('FRENCH', 'French'),
+        ('SPANISH', 'Spanish'),
     ]
-    name = models.CharField(max_length=25, choices=LANGUAGE_CHOICES, default='ENG')
+
+    name = models.CharField(
+        max_length=25,
+        choices=LANGUAGE_CHOICES,
+        default='ENGLISH'
+    )
 
     def __str__(self):
         return self.name
@@ -60,11 +70,15 @@ class BookInstance(models.Model):
         ('AVAILABLE', 'A'),
         ('BORROWED', 'B'),
     ]
-    unique_id = models.UUIDField(primary_key=True, default=uuid4)
-    due_back = models.DateField()
-    status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='A')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    imprint = models.CharField(max_length=255, blank=False, null=False)
+    unique_id = models.UUIDField(
+        primary_key=True,
+        default=uuid4,
+        editable=False
+    )
 
+    due_back = models.DateField(
+        blank=True,
+        null=True
+    )
     def __str__(self):
         return self.imprint
